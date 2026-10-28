@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học Tập Vui - Nền Tảng Thi Đua Học Tập</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --accent: #d84315;
+            --bg: #f4f9f4;
+            --card-bg: #ffffff;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #2c3e50; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header { background-color: var(--primary); color: white; padding: 18px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .logo-area h1 { margin: 0; font-size: 26px; display: flex; align-items: center; gap: 8px; }
+        .logo-area .subtitle { font-size: 13px; opacity: 0.9; margin-top: 3px; }
+        
+        .user-profile-badge { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.18); padding: 8px 16px; border-radius: 30px; font-size: 14px; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #ffffff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; }
+        .btn-switch-user { background: #ffffff; color: var(--primary); border: none; padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-switch-user:hover { background: #e8f5e9; }
+
+        .container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 30px 15px; max-width: 1100px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; width: 100%; margin-bottom: 25px; }
+        .stat-card { background: var(--card-bg); padding: 15px 20px; border-radius: 14px; box-shadow: 0 6px 12px rgba(0,0,0,0.04); border-top: 4px solid #4caf50; text-align: center; }
+        .stat-card h3 { margin: 0 0 6px 0; font-size: 13px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card p { margin: 0; font-size: 26px; font-weight: bold; color: var(--accent); }
+
+        .rule-warning { background-color: #fff3e0; border-left: 5px solid #ff9800; padding: 12px 18px; margin-bottom: 25px; border-radius: 0 8px 8px 0; width: 100%; box-sizing: border-box; text-align: left; font-size: 14px; color: #e65100; font-weight: 600; }
+
+        .main-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 25px; width: 100%; }
+        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
+
+        .timer-card { background: var(--card-bg); padding: 30px 20px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); text-align: center; border: 1px solid #e0f2f1; }
+        #tree-container { font-size: 100px; margin: 10px 0; transition: transform 0.4s; display: inline-block; }
+        #timer { font-size: 64px; font-weight: 800; margin: 10px 0; color: var(--primary-dark); font-variant-numeric: tabular-nums; }
+        
+        .controls { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 20px; }
+        select { padding: 12px 16px; font-size: 16px; border-radius: 12px; border: 2px solid #81c784; background: #f1f8e9; color: var(--primary-dark); font-weight: bold; outline: none; cursor: pointer; width: 90%; max-width: 320px; }
+        
+        .btn-group { display: flex; justify-content: center; gap: 10px; width: 100%; max-width: 350px; }
+        button.action-btn { padding: 14px 24px; font-size: 17px; background-color: var(--primary); color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(46,125,50,0.2); transition: 0.2s; flex: 1; }
+        button.action-btn:hover { background-color: var(--primary-dark); transform: translateY(-1px); }
+        
+        #pauseBtn { background-color: #f39c12; display: none; }
+        #pauseBtn:hover { background-color: #e67e22; }
+        #stopBtn { background-color: #e74c3c; display: none; }
+        #stopBtn:hover { background-color: #c0392b; }
+
+        #message { font-size: 15px; margin-top: 20px; font-weight: 600; color: #7f8c8d; min-height: 24px; padding: 8px; border-radius: 8px; }
+        .msg-success { color: #27ae60 !important; background-color: #eafaf1; }
+        .msg-warning { color: #d35400 !important; background-color: #fdf2e9; }
+        .msg-error { color: #c0392b !important; background-color: #fdedec; }
+
+        .side-card { background: var(--card-bg); padding: 25px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); border: 1px solid #e0f2f1; display: flex; flex-direction: column; }
+        .side-card h3 { margin: 0 0 15px 0; color: var(--primary); font-size: 19px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e8f5e9; padding-bottom: 10px; }
+        .badge-school { font-size: 12px; background: #e8f5e9; color: var(--primary); padding: 4px 8px; border-radius: 8px; }
+        
+        .leaderboard-list { list-style: none; padding: 0; margin: 0; }
+        .leader-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; background: #fafdfa; border: 1px solid #f0f4f0; }
+        .leader-item.current-user { background: #e8f5e9; border: 1.5px solid #4caf50; font-weight: bold; }
+        .rank-badge { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: white; background: #95a5a6; margin-right: 10px; }
+        .rank-1 { background: #f1c40f; color: #333; }
+        .rank-2 { background: #bdc3c7; color: #333; }
+        .rank-3 { background: #e67e22; }
+        .leader-info { flex: 1; display: flex; flex-direction: column; text-align: left; }
+        .leader-name { font-size: 14px; }
+        .leader-school-class { font-size: 11px; color: #7f8c8d; }
+        .leader-coins { font-weight: bold; color: var(--accent); font-size: 14px; }
+
+        .history-card { background: var(--card-bg); padding: 20px 25px; border-radius: 16px; margin-top: 25px; width: 100%; box-sizing: border-box; text-align: left; border: 1px solid #e0f2f1; }
+        .history-card h3 { margin: 0 0 12px 0; color: var(--primary); font-size: 18px; }
+        .history-list { list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto; }
+        .history-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 14px; }
+        .history-item:last-child { border-bottom: none; }
+
+        /* Modal Đăng nhập / Chọn học sinh */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-card { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-card h2 { margin: 0 0 8px 0; color: var(--primary); font-size: 22px; }
+        .modal-card p { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.4; }
+        .input-group { text-align: left; margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #333; }
+        .input-group input { width: 100%; padding: 12px; border: 1.5px solid #c8e6c9; border-radius: 10px; font-size: 15px; box-sizing: border-box; outline: none; }
+        .input-group input:focus { border-color: var(--primary); }
+        
+        .row-inputs { display: flex; gap: 10px; }
+        .row-inputs .input-group { flex: 1; }
+
+        .btn-submit { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-submit:hover { background: var(--primary-dark); }
+
+        footer { text-align: center; padding: 18px; color: #7f8c8d; font-size: 13px; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <h1>🌱 Học Tập Vui</h1>
+            <div class="subtitle">Hệ sinh thái thi đua rèn luyện kỷ luật số học sinh</div>
+        </div>
+        <div class="user-profile-badge">
+            <div class="user-avatar" id="headerAvatar">?</div>
+            <div style="text-align: left;">
+                <div style="font-weight: bold;" id="headerName">Chưa đăng nhập</div>
+                <div style="font-size: 11px; opacity: 0.85;" id="headerSchoolClass">Trường: -- | Lớp: --</div>
+            </div>
+            <button class="btn-switch-user" onclick="openLoginModal()">Đổi hồ sơ</button>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- Bảng Thống Kê Điểm Cá Nhân -->
+        <div class="dashboard">
+            <div class="stat-card">
+                <h3>Ví Lá vui vẻ</h3>
+                <p>🪙 <span id="totalCoins">0</span></p>
+            </div>
+            <div class="stat-card">
+                <h3>Hôm nay</h3>
+                <p>🎯 <span id="todayCoins">0</span></p>
+            </div>
+            <div class="stat-card">
+                <h3>Tuần này</h3>
+                <p>📅 <span id="weekCoins">0</span></p>
+            </div>
+            <div class="stat-card">
+                <h3>Tháng này</h3>
+                <p>🏆 <span id="monthCoins">0</span></p>
+            </div>
+        </div>
+
+        <div class="rule-warning">
+            ⚠️ <b>QUY TẮC RÈN LUYỆN:</b> Mỗi bạn học sinh tích lũy Lá vui vẻ vào hồ sơ cá nhân để tham gia Bảng thi đua. Chuyển tab hoặc rời màn hình sẽ khiến <b>cây héo</b> và bị hủy phiên rèn luyện!
+        </div>
+
+        <div class="main-layout">
+            
+            <!-- Cột 1: Đồng hồ Pomodoro Nuôi Cây -->
+            <div class="timer-card">
+                <div id="tree-container">🌱</div>
+                <div id="timer">00:00</div> 
+                
+                <div class="controls">
+                    <select id="timeOption">
+                        <option value="1">⏱️ 1 phút (Thử nghiệm tính năng)</option>
+                        <option value="10">☕ 10 phút (Giải lao / Đọc sách nhanh)</option>
+                        <option value="25" selected>🍅 25 phút (Học bài tập trung - Pomodoro)</option>
+                        <option value="45">🎒 45 phút (Một tiết học tiêu chuẩn)</option>
+                        <option value="60">🎓 60 phút (Làm bài chuyên đề)</option>
+                    </select>
+                    
+                    <div class="btn-group">
+                        <button class="action-btn" id="startBtn">Bắt đầu ngay</button>
+                        <button class="action-btn" id="pauseBtn">Tạm dừng</button>
+                        <button class="action-btn" id="stopBtn">Bỏ cuộc</button>
+                    </div>
+                </div>
+
+                <div id="message">Chào bạn! Chọn mốc thời gian và bắt đầu trồng cây tích lũy lá nhé!</div>
+            </div>
+
+            <!-- Cột 2: Bảng Xếp Hạng Thi Đua -->
+            <div class="side-card">
+                <h3>
+                    <span>🏆 Bảng Vàng Thi Đua</span>
+                    <span class="badge-school">Tuần này</span>
+                </h3>
+                <ul class="leaderboard-list" id="leaderboardList">
+                    <!-- Danh sách hiển thị động qua JS -->
+                </ul>
+                <div style="font-size: 12px; color: #7f8c8d; margin-top: 15px; text-align: center;">
+                    * Điểm được quy đổi thành điểm thi đua Đội hàng tuần.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Lịch sử rèn luyện của riêng học sinh hiện tại -->
+        <div class="history-card">
+            <h3>📅 Nhật ký rèn luyện của <span id="historyStudentName">bạn</span></h3>
+            <ul class="history-list" id="historyList">
+                <li style="color: #999; font-style: italic;">Chưa có phiên rèn luyện nào hoàn thành.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- MODAL ĐĂNG NHẬP / THIẾT LẬP HỒ SƠ HỌC SINH -->
+    <div class="modal-overlay" id="loginModal" style="display: none;">
+        <div class="modal-card">
+            <h2>Hồ Sơ Học Sinh Liên Trường</h2>
+            <p>Vui lòng nhập thông tin để hệ thống ghi nhận thời gian tập trung và Lá vui vẻ vào tài khoản của bạn.</p>
+            
+            <div class="input-group">
+                <label>Họ và tên học sinh:</label>
+                <input type="text" id="inputName" placeholder="Ví dụ: Nguyễn Gia Huy">
+            </div>
+            
+            <div class="row-inputs">
+                <div class="input-group">
+                    <label>Trường THCS:</label>
+                    <input type="text" id="inputSchool" placeholder="Ví dụ: Suối Hoa">
+                </div>
+                
+                <div class="input-group">
+                    <label>Lớp học:</label>
+                    <input type="text" id="inputClass" placeholder="Ví dụ: 8A1">
+                </div>
+            </div>
+
+            <button class="btn-submit" onclick="saveStudentProfile()">Vào Học Ngay</button>
+        </div>
+    </div>
+    
+    <footer>
+        Dự án Khoa học Kỹ thuật 2026-2027 • Lĩnh vực: KHXH - Hành vi
+    </footer>
+
+    <script>
+        // --- QUẢN LÝ TÀI KHOẢN HỌC SINH ---
+        let currentStudent = {
+            id: '',
+            name: '',
+            school: '',
+            className: ''
+        };
+
+        // Bảng dữ liệu học sinh mẫu thi đua Liên Trường
+        const defaultLeaderboard = [
+            { name: "Vũ Bảo Ngọc", school: "Suối Hoa", className: "8A1", coins: 85 },
+            { name: "Trần Đức Minh", school: "Nguyễn Đăng Đạo", className: "9A2", coins: 64 },
+            { name: "Lê Phương Thảo", school: "Tiền An", className: "7A1", coins: 52 },
+            { name: "Hoàng Anh Dũng", school: "Suối Hoa", className: "8A2", coins: 40 },
+            { name: "Nguyễn Mai Linh", school: "Vệ An", className: "6A1", coins: 35 }
+        ];
+
+        function checkStudentLogin() {
+            const saved = localStorage.getItem('currentFocusStudent');
+            if (saved) {
+                currentStudent = JSON.parse(saved);
+                updateProfileUI();
+                loadStudentData();
+            } else {
+                openLoginModal();
+            }
+        }
+
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+            if (currentStudent.name) {
+                document.getElementById('inputName').value = currentStudent.name;
+                document.getElementById('inputSchool').value = currentStudent.school;
+                document.getElementById('inputClass').value = currentStudent.className;
+            }
+        }
+
+        function saveStudentProfile() {
+            const name = document.getElementById('inputName').value.trim();
+            const school = document.getElementById('inputSchool').value.trim();
+            const className = document.getElementById('inputClass').value.trim();
+            
+            if (!name || !school || !className) {
+                alert("Vui lòng điền đầy đủ Họ Tên, Trường và Lớp!");
+                return;
+            }
+
+            const id = name.toLowerCase().replace(/\s+/g, '_') + '_' + school.toLowerCase().replace(/\s+/g, '_') + '_' + className;
+            currentStudent = { id, name, school, className };
+            localStorage.setItem('currentFocusStudent', JSON.stringify(currentStudent));
+            
+            document.getElementById('loginModal').style.display = 'none';
+            updateProfileUI();
+            loadStudentData();
+        }
+
+        function updateProfileUI() {
+            document.getElementById('headerName').innerText = currentStudent.name;
+            document.getElementById('headerSchoolClass').innerText = `Trường: ${currentStudent.school} | Lớp: ${currentStudent.className}`;
+            document.getElementById('headerAvatar').innerText = currentStudent.name.charAt(0).toUpperCase();
+            document.getElementById('historyStudentName').innerText = currentStudent.name;
+            document.getElementById('message').innerText = `Xin chào ${currentStudent.name}! Hãy chọn thời gian và nuôi cây nhé!`;
+        }
+
+        // --- QUẢN LÝ DỮ LIỆU TẬP TRUNG ---
+        function getStudentStorageKey() { return 'focusHistory_' + currentStudent.id; }
+        function loadStudentData() { loadStats(); renderLeaderboard(); }
+
+        let timeRemaining = 0; let totalTime = 0; let timerInterval = null; let isRunning = false; let isPaused = false;
+
+        const treeEl = document.getElementById("tree-container");
+        const timerEl = document.getElementById("timer");
+        const msgEl = document.getElementById("message");
+        const btn = document.getElementById("startBtn");
+        const pauseBtn = document.getElementById("pauseBtn");
+        const stopBtn = document.getElementById("stopBtn");
+        const timeOption = document.getElementById("timeOption");
+
+        function updateDisplayTime(seconds) {
+            let minutes = Math.floor(seconds / 60); let secs = seconds % 60;
+            timerEl.innerText = (minutes < 10 ? "0" : "") + minutes + ":" + (secs < 10 ? "0" : "") + secs;
+        }
+
+        timeOption.addEventListener("change", function() { if(!isRunning) updateDisplayTime(parseInt(this.value) * 60); });
+        function showMessage(text, type = '') { msgEl.innerText = text; msgEl.className = ''; if (type) msgEl.classList.add(type); }
+
+        btn.addEventListener("click", function() {
+            if (isRunning) return;
+            if (!currentStudent.name) { openLoginModal(); return; }
+            
+            totalTime = parseInt(timeOption.value) * 60; timeRemaining = totalTime; isRunning = true; isPaused = false;
+            
+            btn.style.display = "none"; timeOption.disabled = true;
+            pauseBtn.style.display = "inline-block"; stopBtn.style.display = "inline-block";
+            pauseBtn.innerText = "Tạm dừng";
+            
+            showMessage(`🌱 ${currentStudent.name} đang tập trung... Giữ nguyên màn hình này nhé!`, "msg-success");
+            treeEl.innerText = "🌿";
+            updateDisplayTime(timeRemaining); timerInterval = setInterval(tick, 1000);
+        });
+
+        pauseBtn.addEventListener("click", function() {
+            if (!isRunning) return;
+            if (isPaused) {
+                isPaused = false; pauseBtn.innerText = "Tạm dừng"; showMessage("Đã quay lại tập trung. Cố lên bạn nhé!", "msg-success");
+                treeEl.style.opacity = "1"; timerInterval = setInterval(tick, 1000);
+            } else {
+                isPaused = true; pauseBtn.innerText = "Tiếp tục"; showMessage("Đang tạm dừng. Đừng quên quay lại hoàn thành buổi học!", "msg-warning");
+                treeEl.style.opacity = "0.7"; clearInterval(timerInterval);
+            }
+        });
+        
+        stopBtn.addEventListener("click", function() {
+            if (!isRunning) return;
+            if (confirm("Bạn có chắc chắn muốn bỏ cuộc? Cây sẽ héo và không nhận được lá.")) {
+                penalizeCheating("Bạn vừa bấm bỏ cuộc. Hãy kiên trì hơn ở lần trồng sau nhé!");
+            }
+        });
+
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden && isRunning && !isPaused) {
+                penalizeCheating(`⚠️ PHÁT HIỆN RỜI TAB: ${currentStudent.name} vừa chuyển sang ứng dụng/tab khác! Cây đã bị héo.`);
+            }
+        });
+
+        function penalizeCheating(reason) {
+            clearInterval(timerInterval); isRunning = false; isPaused = false;
+            treeEl.innerText = "🥀"; treeEl.style.opacity = "1"; timerEl.innerText = "HÉO CÂY!";
+            showMessage(reason, "msg-error");
+            btn.style.display = "inline-block"; btn.innerText = "Trồng lại từ đầu"; timeOption.disabled = false;
+            pauseBtn.style.display = "none"; stopBtn.style.display = "none";
+        }
+
+        function tick() {
+            timeRemaining--; updateDisplayTime(timeRemaining);
+            if (timeRemaining === Math.floor(totalTime / 2)) treeEl.innerText = "🌳";
+            if (timeRemaining === Math.floor(totalTime / 4)) treeEl.innerText = "🍎";
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval); let earnedCoins = Math.floor(totalTime / 60);
+                showMessage(`🎉 Xuất sắc! ${currentStudent.name} hoàn thành mục tiêu và nhận +${earnedCoins} Lá vui vẻ!`, "msg-success");
+                isRunning = false; isPaused = false;
+                btn.style.display = "inline-block"; btn.innerText = "Nuôi cây mới"; timeOption.disabled = false;
+                pauseBtn.style.display = "none"; stopBtn.style.display = "none";
+                saveSession(earnedCoins, totalTime / 60);
+            }
+        }
+
+        function saveSession(coins, duration) {
+            const key = getStudentStorageKey();
+            let history = JSON.parse(localStorage.getItem(key)) || []; let now = new Date();
+            history.push({ date: now.toLocaleDateString('vi-VN'), time: now.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}), timestamp: now.getTime(), duration: duration, coins: coins });
+            localStorage.setItem(key, JSON.stringify(history)); loadStats(); renderLeaderboard();
+        }
+
+        function loadStats() {
+            if (!currentStudent.id) return;
+            const key = getStudentStorageKey(); let history = JSON.parse(localStorage.getItem(key)) || [];
+            let totalCoins = 0, todayCoins = 0, weekCoins = 0, monthCoins = 0;
+            let now = new Date(); let todayStr = now.toLocaleDateString('vi-VN'); let oneWeekAgo = now.getTime() - (7 * 24 * 60 * 60 * 1000);
+            let currentMonth = now.getMonth(); let currentYear = now.getFullYear();
+            let historyHTML = ''; let recentHistory = history.slice().reverse();
+
+            recentHistory.forEach((session) => {
+                totalCoins += session.coins;
+                if (session.date === todayStr) todayCoins += session.coins;
+                if (session.timestamp >= oneWeekAgo) weekCoins += session.coins;
+                let sessionDate = new Date(session.timestamp);
+                if (sessionDate.getMonth() === currentMonth && sessionDate.getFullYear() === currentYear) monthCoins += session.coins;
+                
+                historyHTML += `<li class="history-item"><span>📅 ${session.date} (${session.time}) - Học ${session.duration} phút</span><b style="color: #d84315;">+${session.coins} Lá</b></li>`;
+            });
+
+            document.getElementById("totalCoins").innerText = totalCoins; document.getElementById("todayCoins").innerText = todayCoins;
+            document.getElementById("weekCoins").innerText = weekCoins; document.getElementById("monthCoins").innerText = monthCoins;
+            if(historyHTML === "") historyHTML = '<li style="color: #999; font-style: italic;">Chưa có buổi học nào. Hãy trồng cây đầu tiên nhé!</li>';
+            document.getElementById("historyList").innerHTML = historyHTML;
+        }
+
+        function renderLeaderboard() {
+            const key = getStudentStorageKey(); let history = JSON.parse(localStorage.getItem(key)) || [];
+            let myTotalCoins = history.reduce((sum, item) => sum + item.coins, 0);
+            let fullList = [...defaultLeaderboard];
+            
+            let userIndex = fullList.findIndex(x => x.name === currentStudent.name && x.school === currentStudent.school && x.className === currentStudent.className);
+            if (userIndex >= 0) { fullList[userIndex].coins = myTotalCoins; } 
+            else if (currentStudent.name) { fullList.push({ name: currentStudent.name, school: currentStudent.school, className: currentStudent.className, coins: myTotalCoins, isCurrent: true }); }
+
+            fullList.sort((a, b) => b.coins - a.coins);
+            let html = '';
+            fullList.slice(0, 6).forEach((item, idx) => {
+                let isMe = (item.name === currentStudent.name && item.school === currentStudent.school && item.className === currentStudent.className);
+                let rankClass = idx === 0 ? 'rank-1' : (idx === 1 ? 'rank-2' : (idx === 2 ? 'rank-3' : ''));
+                html += `
+                    <li class="leader-item ${isMe ? 'current-user' : ''}">
+                        <div class="rank-badge ${rankClass}">${idx + 1}</div>
+                        <div class="leader-info">
+                            <span class="leader-name">${item.name} ${isMe ? '(Bạn)' : ''}</span>
+                            <span class="leader-school-class">THCS ${item.school} | Lớp ${item.className}</span>
+                        </div>
+                        <span class="leader-coins">🪙 ${item.coins} Lá</span>
+                    </li>
+                `;
+            });
+            document.getElementById("leaderboardList").innerHTML = html;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => { checkStudentLogin(); updateDisplayTime(parseInt(timeOption.value) * 60); });
+    </script>
+    
+    <script src="https://sf-cdn.coze.com/obj/unpkg-va/flow-web-client/1.0.0/v2/index.js"></script>
+    <script>
+        new CozeWebSDK.WebChatClient({ config: { bot_id: 'ĐIỀN_BOT_ID_CỦA_BẠN_VÀO_ĐÂY', }, componentProps: { title: 'Mộc - Trợ lý AI', layout: 'pc', }, });
+    </script>
+</body>
+</html>
