@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Học Tập Vui - Nền Tảng Kỷ Luật Số & Cân Bằng Cuộc Sống</title>
+    <title>Học Tập Vui - Nền Tảng Kỷ Luật Số & Học Tập Cân Bằng</title>
     <style>
         :root {
             --primary: #2e7d32;
@@ -67,16 +67,40 @@
         .msg-warning { color: #d35400 !important; background-color: #fdf2e9; }
         .msg-error { color: #c0392b !important; background-color: #fdedec; }
 
-        /* Nhiệm Vụ Ẩn Cân Bằng Cuộc Sống */
+        /* Nhiệm Vụ Cân Bằng Hàng Ngày */
         .quest-section { margin-top: 25px; background: #fffdf5; border: 1.5px dashed #f39c12; border-radius: 16px; padding: 18px; text-align: left; }
-        .quest-section h4 { margin: 0 0 10px 0; color: #b7791f; font-size: 16px; display: flex; align-items: center; justify-content: space-between; }
+        .quest-section h4 { margin: 0 0 10px 0; color: #b7791f; font-size: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
         .quest-badge { background: #fef3c7; color: #92400e; font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
-        .quest-item { background: white; border: 1px solid #fed7aa; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .quest-item { background: white; border: 1px solid #fed7aa; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; transition: 0.2s; }
+        .quest-item:hover { box-shadow: 0 3px 8px rgba(243,156,18,0.15); }
         .quest-desc { font-size: 13.5px; color: #374151; font-weight: 500; }
         .quest-reward { font-size: 12px; color: #b45309; font-weight: bold; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
-        .btn-quest { background: #f59e0b; color: white; border: none; padding: 7px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .btn-quest { background: #f59e0b; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.2s; }
         .btn-quest:hover { background: #d97706; }
         .btn-quest.done { background: #10b981; cursor: default; }
+
+        /* Modal Xác Minh Nhiệm Vụ Cân Bằng (Countdown & Checklist) */
+        .quest-modal-card { background: white; padding: 26px; border-radius: 20px; width: 92%; max-width: 480px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25); animation: zoomIn 0.2s ease-out; position: relative; }
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .quest-modal-header { font-size: 20px; font-weight: bold; color: #b45309; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .quest-modal-guide { font-size: 13.5px; color: #4b5563; line-height: 1.5; margin-bottom: 18px; text-align: left; background: #fefce8; padding: 12px 14px; border-radius: 10px; border-left: 4px solid #f59e0b; }
+        .quest-timer-display { font-size: 46px; font-weight: 800; color: #d97706; font-variant-numeric: tabular-nums; margin: 10px 0; }
+        .quest-progress-bar { width: 100%; height: 8px; background: #f3f4f6; border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
+        .quest-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #f59e0b, #10b981); transition: width 0.3s; }
+        
+        .quest-checklist { text-align: left; margin: 15px 0; background: #f8fafc; padding: 12px 15px; border-radius: 10px; font-size: 13.5px; }
+        .quest-checklist label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; cursor: pointer; }
+        .quest-checklist label:last-child { margin-bottom: 0; }
+        
+        .quest-reflection-input { width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 13px; margin: 10px 0 15px 0; outline: none; box-sizing: border-box; font-family: inherit; }
+        .quest-reflection-input:focus { border-color: #f59e0b; }
+
+        .btn-claim-quest { width: 100%; padding: 13px; background: #10b981; color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-claim-quest:disabled { background: #9ca3af; cursor: not-allowed; }
+        .btn-claim-quest:not(:disabled):hover { background: #059669; }
+
+        .btn-demo-fast { background: none; border: none; color: #94a3b8; font-size: 11px; text-decoration: underline; cursor: pointer; margin-top: 10px; }
+        .btn-demo-fast:hover { color: #f59e0b; }
 
         /* Cột Phải: Bảng Vinh Danh */
         .side-card { background: var(--card-bg); padding: 22px; border-radius: 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); border: 1px solid #e0f2f1; display: flex; flex-direction: column; }
@@ -116,6 +140,35 @@
         .btn-submit { width: 100%; padding: 13px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-submit:hover { background: var(--primary-dark); }
 
+        /* NÚT & HỘP CHATBOT AI "VUI VẺ" TÍCH HỢP TRỰC TIẾP TRÊN WEB */
+        .ai-fab-btn { position: fixed; bottom: 25px; right: 25px; width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(135deg, #2e7d32, #43a047); color: white; border: none; font-size: 30px; box-shadow: 0 8px 24px rgba(46,125,50,0.4); cursor: pointer; z-index: 999; display: flex; align-items: center; justify-content: center; transition: 0.3s transform; }
+        .ai-fab-btn:hover { transform: scale(1.08); }
+        .ai-fab-badge { position: absolute; top: -3px; right: -3px; background: #e74c3c; color: white; font-size: 11px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+
+        .chat-widget { position: fixed; bottom: 95px; right: 25px; width: 360px; height: 500px; max-height: 80vh; background: white; border-radius: 20px; box-shadow: 0 12px 35px rgba(0,0,0,0.2); z-index: 1000; display: none; flex-direction: column; overflow: hidden; border: 1px solid #d4edda; animation: slideUp 0.25s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .chat-header { background: var(--primary); color: white; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-header-info { display: flex; align-items: center; gap: 10px; }
+        .chat-avatar { width: 34px; height: 34px; border-radius: 50%; background: white; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .chat-title { font-weight: bold; font-size: 15px; }
+        .chat-status { font-size: 11px; opacity: 0.85; }
+        .btn-close-chat { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8faf8; display: flex; flex-direction: column; gap: 12px; }
+        .chat-msg { max-width: 82%; padding: 10px 14px; border-radius: 14px; font-size: 13.5px; line-height: 1.45; word-wrap: break-word; }
+        .chat-msg.bot { align-self: flex-start; background: white; color: #2c3e50; border: 1px solid #e2e8f0; border-top-left-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        .chat-msg.user { align-self: flex-end; background: var(--primary); color: white; border-top-right-radius: 3px; }
+
+        .chat-quick-actions { display: flex; gap: 6px; padding: 8px 12px; overflow-x: auto; background: white; border-top: 1px solid #edf2f7; }
+        .btn-quick { background: #e8f5e9; color: var(--primary-dark); border: none; border-radius: 12px; padding: 5px 10px; font-size: 11.5px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .btn-quick:hover { background: #c8e6c9; }
+
+        .chat-input-area { display: flex; padding: 10px 12px; background: white; border-top: 1px solid #edf2f7; gap: 8px; }
+        .chat-input-area input { flex: 1; padding: 9px 12px; border: 1.5px solid #e2e8f0; border-radius: 20px; font-size: 13.5px; outline: none; }
+        .chat-input-area input:focus { border-color: var(--primary); }
+        .btn-send { background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
+
         footer { text-align: center; padding: 16px; color: var(--text-sub); font-size: 13px; margin-top: auto; }
     </style>
 </head>
@@ -124,7 +177,7 @@
     <header>
         <div class="logo-area">
             <h1>🌱 Học Tập Vui</h1>
-            <div class="subtitle">Hệ sinh thái thi đua rèn luyện kỷ luật số & Cân bằng cuộc sống</div>
+            <div class="subtitle">Hệ sinh thái thi đua rèn luyện kỷ luật số & Học tập cân bằng</div>
         </div>
         <div class="user-profile-badge">
             <div class="user-avatar" id="headerAvatar">?</div>
@@ -163,13 +216,13 @@
                 ⚠️ <b>KỶ LUẬT SỐ:</b> Khi bấm giờ, chuyển tab hoặc rời ứng dụng sẽ làm <b>héo cây</b> ngay lập tức và hủy bỏ phiên học.
             </div>
             <div class="health-banner">
-                🛡️ <b>CHỐNG BỆNH THÀNH TÍCH:</b> Học tập là hành trình dài. Giới hạn tối đa 90 Lá/ngày để bảo vệ mắt và cột sống của học sinh THCS.
+                🛡️ <b>HỌC TẬP CÂN BẰNG:</b> Học tập là hành trình dài. Giới hạn tối đa 3 giờ/ngày (180 Lá) để bảo vệ mắt và cột sống của học sinh THCS.
             </div>
         </div>
 
         <div class="main-layout">
             
-            <!-- Cột 1: Pomodoro Trồng Cây & Nhiệm Vụ Ẩn -->
+            <!-- Cột 1: Pomodoro Trồng Cây & Nhiệm Vụ Cân Bằng Hàng Ngày -->
             <div>
                 <div class="timer-card">
                     <div id="tree-container">🌱</div>
@@ -194,11 +247,11 @@
                     <div id="message">Chào bạn! Chọn mốc thời gian và bắt đầu trồng cây tích lũy lá nhé!</div>
                 </div>
 
-                <!-- KHU VỰC NHIỆM VỤ ẨN CÂN BẰNG CUỘC SỐNG -->
+                <!-- KHU VỰC NHIỆM VỤ CÂN BẰNG HÀNG NGÀY -->
                 <div class="quest-section">
                     <h4>
-                        <span>✨ Nhiệm Vụ Ẩn Cân Bằng (Do Vui Vẻ gợi ý)</span>
-                        <span class="quest-badge">Đổi thói quen số</span>
+                        <span>✨ Nhiệm Vụ Cân Bằng Hàng Ngày (Do Vui Vẻ gợi ý)</span>
+                        <span class="quest-badge">Có đếm giờ xác minh ⏱️</span>
                     </h4>
                     <div id="questContainer">
                         <!-- Danh sách render tự động -->
@@ -258,6 +311,81 @@
             <button class="btn-submit" onclick="saveStudentProfile()">Vào Học Ngay</button>
         </div>
     </div>
+
+    <!-- MODAL XÁC MINH THỰC HIỆN NHIỆM VỤ CÂN BẰNG (CÓ ĐẾM GIỜ & CHECKLIST) -->
+    <div class="modal-overlay" id="questModal" style="display: none;">
+        <div class="quest-modal-card">
+            <div class="quest-modal-header" id="questModalTitle">✨ Tên Nhiệm Vụ</div>
+            <div class="quest-modal-guide" id="questModalGuide">Hướng dẫn thực hiện...</div>
+            
+            <!-- Đồng hồ đếm ngược xác minh -->
+            <div class="quest-timer-display" id="questTimer">00:00</div>
+            <div class="quest-progress-bar">
+                <div class="quest-progress-fill" id="questProgressFill"></div>
+            </div>
+
+            <!-- Khu vực checklist kiểm tra hành vi (dành cho q3) -->
+            <div class="quest-checklist" id="questChecklistArea" style="display: none;">
+                <div style="font-weight: bold; margin-bottom: 8px; color: #1e293b;">Tích chọn khi đã làm xong:</div>
+                <label><input type="checkbox" id="checkQ3_1" onchange="validateQuestCompletion()"> 1. Xếp sách vở vào cặp đúng thời khóa biểu ngày mai</label>
+                <label><input type="checkbox" id="checkQ3_2" onchange="validateQuestCompletion()"> 2. Lau sạch mặt bàn, bỏ giấy nháp vụn vào thùng rác</label>
+                <label><input type="checkbox" id="checkQ3_3" onchange="validateQuestCompletion()"> 3. Đặt ghế gọn gàng, tắt đèn bàn học</label>
+            </div>
+
+            <!-- Khu vực viết lời cảm nghĩ/lời chúc (dành cho q4) -->
+            <div id="questReflectionArea" style="display: none; text-align: left;">
+                <div style="font-size: 13px; font-weight: bold; color: #1e293b; margin-bottom: 5px;">Ghi lại 1 lời nhắn / cử chỉ yêu thương em đã trao gửi bố mẹ:</div>
+                <input type="text" class="quest-reflection-input" id="questReflectionInput" placeholder="Ví dụ: Em vừa ôm mẹ và chúc mẹ ngủ ngon..." oninput="validateQuestCompletion()">
+            </div>
+
+            <!-- Nút bấm nhận thưởng -->
+            <button class="btn-claim-quest" id="btnClaimQuest" disabled onclick="confirmQuestReward()">
+                ⏳ Đang thực hiện nhiệm vụ...
+            </button>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                <button class="btn-demo-fast" onclick="cancelQuestModal()">Hủy bỏ</button>
+                <button class="btn-demo-fast" onclick="fastForwardDemo()" title="Dành riêng cho ban giám khảo chấm thi xem nhanh">⚡ Chế độ chấm thi (Demo 5s)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRỢ LÝ AI "VUI VẺ" TÍCH HỢP TRỰC TIẾP TRÊN WEB (HOÀN TOÀN MIỄN PHÍ) -->
+    <button class="ai-fab-btn" id="aiFabBtn" onclick="toggleChat()">
+        😊
+        <span class="ai-fab-badge">AI</span>
+    </button>
+
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="chat-avatar">😊</div>
+                <div>
+                    <div class="chat-title">Vui Vẻ - Trợ Lý Học Bài</div>
+                    <div class="chat-status">🟢 Trực tuyến • Bạn đồng hành THCS</div>
+                </div>
+            </div>
+            <button class="btn-close-chat" onclick="toggleChat()">✕</button>
+        </div>
+
+        <div class="chat-body" id="chatBody">
+            <div class="chat-msg bot">
+                Xin chào bạn! Mình là <b>Vui Vẻ</b> 😊 - Trợ lý học tập và cân bằng tâm lý của bạn. Cần gợi ý dàn ý môn Văn, phương pháp giải Toán hay cảm thấy mỏi mắt, căng thẳng, cứ nhắn cho mình nhé!
+            </div>
+        </div>
+
+        <div class="chat-quick-actions">
+            <button class="btn-quick" onclick="sendQuickPrompt('Làm sao để tập trung không xao nhãng?')">🎯 Mẹo tập trung</button>
+            <button class="btn-quick" onclick="sendQuickPrompt('Gợi ý cho mình bài tập vươn vai thư giãn')">🧘 Thể dục 2 phút</button>
+            <button class="btn-quick" onclick="sendQuickPrompt('Mình vừa bị héo cây, buồn quá')">🥀 Bị héo cây</button>
+            <button class="btn-quick" onclick="sendQuickPrompt('Cách lập dàn ý bài văn nghị luận')">✍️ Gợi ý học văn</button>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Hỏi Vui Vẻ bài tập hoặc chia sẻ mệt mỏi..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn-send" onclick="sendChatMessage()">➤</button>
+        </div>
+    </div>
     
     <footer>
         Dự án Khoa học Kỹ thuật 2026-2027 • Lĩnh vực: KHXH - Hành vi
@@ -275,12 +403,40 @@
             { name: "Nguyễn Mai Linh", school: "Vệ An", className: "6A1", coins: 35 }
         ];
 
-        // DANH SÁCH NHIỆM VỤ ẨN CÂN BẰNG CUỘC SỐNG
+        // DANH SÁCH NHIỆM VỤ CÂN BẰNG HÀNG NGÀY (CÓ THỜI GIAN ĐẾM NGƯỢC XÁC MINH)
         const lifeQuests = [
-            { id: 'q1', text: 'Uống 1 cốc nước ấm và vươn vai thư giãn 2 phút', reward: 5, type: 'health' },
-            { id: 'q2', text: 'Rời mắt khỏi màn hình, nhìn ra xa cửa sổ ngắm cây xanh 3 phút', reward: 5, type: 'eyes' },
-            { id: 'q3', text: 'Dọn dẹp gọn gàng sách vở trên bàn học trước khi đi ngủ', reward: 8, type: 'habit' },
-            { id: 'q4', text: 'Nói lời chúc ngủ ngon hoặc ôm bố/mẹ sau khi học xong', reward: 10, type: 'family' }
+            { 
+                id: 'q1', 
+                title: 'Uống nước ấm & Vươn vai thư giãn', 
+                text: 'Uống 1 cốc nước ấm và vươn vai thư giãn 2 phút', 
+                duration: 120, // 2 phút đếm ngược
+                reward: 5, 
+                guide: '💧 <b>Hướng dẫn từ Vui Vẻ:</b> Hãy đứng dậy, rót 1 cốc nước ấm uống từng ngụm nhỏ. Sau đó đan hai tay duỗi thẳng lên trời, xoay nhẹ khớp cổ theo chiều kim đồng hồ để giảm tải áp lực cho đốt sống cổ nhé!' 
+            },
+            { 
+                id: 'q2', 
+                title: 'Thư giãn mắt nhìn xa 3 phút', 
+                text: 'Rời mắt khỏi màn hình, nhìn ra xa cửa sổ ngắm cây xanh 3 phút', 
+                duration: 180, // 3 phút đếm ngược
+                reward: 5, 
+                guide: '🌿 <b>Nguyên tắc 20-20-20:</b> Hãy rời mắt khỏi màn hình máy tính/điện thoại, hướng mắt nhìn ra ngoài cửa sổ ngắm vòm cây xanh hoặc chân trời xa. Chớp mắt chậm rãi để các cơ quan thị giác phục hồi độ ẩm và thư giãn não bộ.' 
+            },
+            { 
+                id: 'q3', 
+                title: 'Dọn dẹp bàn học trước khi đi ngủ', 
+                text: 'Dọn dẹp gọn gàng sách vở trên bàn học trước khi đi ngủ', 
+                duration: 45, // 45 giây dọn bàn + tích checklist
+                reward: 8, 
+                guide: '📚 <b>Bàn học sạch - Tư duy sáng:</b> Hãy dành 1 phút để dọn dẹp sách vở ngăn nắp. Một chiếc bàn học gọn gàng sẽ giúp bạn khởi đầu buổi sáng ngày mai với tâm trạng sảng khoái và tràn đầy năng lượng!' 
+            },
+            { 
+                id: 'q4', 
+                title: 'Gắn kết gia đình & Chúc ngủ ngon', 
+                text: 'Nói lời chúc ngủ ngon hoặc ôm bố/mẹ sau khi học xong', 
+                duration: 45, // 45 giây ra phòng khách gặp bố mẹ
+                reward: 10, 
+                guide: '❤️ <b>Góc yêu thương:</b> Điểm số không quan trọng bằng tình cảm gia đình. Hãy bước ra khỏi bàn học, nói một lời chúc ngủ ngon hoặc ôm bố mẹ của bạn một cái nhé!' 
+            }
         ];
 
         function checkStudentLogin() {
@@ -339,7 +495,7 @@
             renderLeaderboard();
         }
 
-        // --- RENDER & XỬ LÝ NHIỆM VỤ CÂN BẰNG ---
+        // --- RENDER DANH SÁCH NHIỆM VỤ CÂN BẰNG ---
         function renderQuests() {
             if (!currentStudent.id) return;
             const completed = JSON.parse(localStorage.getItem(getQuestStorageKey())) || [];
@@ -351,10 +507,10 @@
                     <div class="quest-item">
                         <div>
                             <div class="quest-desc">${q.text}</div>
-                            <div class="quest-reward">⭐ +${q.reward} Lá Vàng Cân Bằng</div>
+                            <div class="quest-reward">⭐ +${q.reward} Lá Vàng Cân Bằng • ⏱️ ${Math.ceil(q.duration / 60)} phút</div>
                         </div>
-                        <button class="btn-quest ${isDone ? 'done' : ''}" onclick="completeQuest('${q.id}', ${q.reward})">
-                            ${isDone ? '✓ Đã xong' : 'Làm xong'}
+                        <button class="btn-quest ${isDone ? 'done' : ''}" onclick="${isDone ? '' : `startQuestVerification('${q.id}')`}">
+                            ${isDone ? '✓ Đã hoàn thành' : 'Thực hiện ngay'}
                         </button>
                     </div>
                 `;
@@ -362,21 +518,147 @@
             document.getElementById('questContainer').innerHTML = html;
         }
 
-        function completeQuest(questId, reward) {
-            const completed = JSON.parse(localStorage.getItem(getQuestStorageKey())) || [];
-            if (completed.includes(questId)) return;
+        // --- CƠ CHẾ XÁC MINH NHIỆM VỤ CÂN BẰNG (ĐẾM GIỜ & CHECKLIST) ---
+        let activeQuest = null;
+        let questTimerInterval = null;
+        let questTimeRemaining = 0;
+        let questTotalDuration = 0;
+        let questTimerFinished = false;
+
+        function startQuestVerification(questId) {
+            if (!currentStudent.name) { openLoginModal(); return; }
+            activeQuest = lifeQuests.find(q => q.id === questId);
+            if (!activeQuest) return;
+
+            questTimerFinished = false;
+            questTotalDuration = activeQuest.duration;
+            questTimeRemaining = questTotalDuration;
+
+            document.getElementById('questModalTitle').innerHTML = `✨ ${activeQuest.title}`;
+            document.getElementById('questModalGuide').innerHTML = activeQuest.guide;
             
-            completed.push(questId);
-            localStorage.setItem(getQuestStorageKey(), JSON.stringify(completed));
+            // Xử lý checklist theo từng nhiệm vụ
+            document.getElementById('questChecklistArea').style.display = (questId === 'q3') ? 'block' : 'none';
+            if (questId === 'q3') {
+                document.getElementById('checkQ3_1').checked = false;
+                document.getElementById('checkQ3_2').checked = false;
+                document.getElementById('checkQ3_3').checked = false;
+            }
 
-            // Cộng điểm cân bằng vào ví
-            let balance = parseInt(localStorage.getItem('balanceLeaves_' + currentStudent.id) || '0');
-            balance += reward;
-            localStorage.setItem('balanceLeaves_' + currentStudent.id, balance.toString());
+            // Xử lý input cảm nghĩ cho q4
+            document.getElementById('questReflectionArea').style.display = (questId === 'q4') ? 'block' : 'none';
+            if (questId === 'q4') {
+                document.getElementById('questReflectionInput').value = '';
+            }
 
-            renderQuests();
-            loadStats();
-            renderLeaderboard();
+            const btnClaim = document.getElementById('btnClaimQuest');
+            btnClaim.disabled = true;
+            btnClaim.innerText = `⏳ Đang thực hiện (${formatQuestTime(questTimeRemaining)})...`;
+            btnClaim.style.background = '#9ca3af';
+
+            updateQuestTimerUI();
+            document.getElementById('questModal').style.display = 'flex';
+
+            clearInterval(questTimerInterval);
+            questTimerInterval = setInterval(tickQuestTimer, 1000);
+        }
+
+        function formatQuestTime(seconds) {
+            let m = Math.floor(seconds / 60);
+            let s = seconds % 60;
+            return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function updateQuestTimerUI() {
+            document.getElementById('questTimer').innerText = formatQuestTime(questTimeRemaining);
+            let pct = ((questTotalDuration - questTimeRemaining) / questTotalDuration) * 100;
+            document.getElementById('questProgressFill').style.width = pct + '%';
+        }
+
+        function tickQuestTimer() {
+            questTimeRemaining--;
+            if (questTimeRemaining < 0) questTimeRemaining = 0;
+            updateQuestTimerUI();
+
+            const btnClaim = document.getElementById('btnClaimQuest');
+            if (questTimeRemaining > 0) {
+                btnClaim.innerText = `⏳ Đang thực hiện (${formatQuestTime(questTimeRemaining)})...`;
+            } else {
+                clearInterval(questTimerInterval);
+                questTimerFinished = true;
+                validateQuestCompletion();
+            }
+        }
+
+        function validateQuestCompletion() {
+            if (!questTimerFinished) return;
+            const btnClaim = document.getElementById('btnClaimQuest');
+
+            // Kiểm tra điều kiện bổ sung
+            if (activeQuest.id === 'q3') {
+                let c1 = document.getElementById('checkQ3_1').checked;
+                let c2 = document.getElementById('checkQ3_2').checked;
+                let c3 = document.getElementById('checkQ3_3').checked;
+                if (!c1 || !c2 || !c3) {
+                    btnClaim.disabled = true;
+                    btnClaim.innerText = '👉 Vui lòng tích đủ 3 việc đã làm ở trên';
+                    btnClaim.style.background = '#9ca3af';
+                    return;
+                }
+            } else if (activeQuest.id === 'q4') {
+                let text = document.getElementById('questReflectionInput').value.trim();
+                if (text.length < 5) {
+                    btnClaim.disabled = true;
+                    btnClaim.innerText = '👉 Hãy ghi lời chúc/hành động yêu thương gửi bố mẹ';
+                    btnClaim.style.background = '#9ca3af';
+                    return;
+                }
+            }
+
+            btnClaim.disabled = false;
+            btnClaim.innerText = `🎉 Hoàn Thành! Nhận +${activeQuest.reward} Lá Vàng ⭐`;
+            btnClaim.style.background = '#10b981';
+        }
+
+        function fastForwardDemo() {
+            questTimeRemaining = 1;
+            tickQuestTimer();
+            if (activeQuest && activeQuest.id === 'q3') {
+                document.getElementById('checkQ3_1').checked = true;
+                document.getElementById('checkQ3_2').checked = true;
+                document.getElementById('checkQ3_3').checked = true;
+            }
+            if (activeQuest && activeQuest.id === 'q4') {
+                document.getElementById('questReflectionInput').value = 'Em vừa ôm chúc bố mẹ ngủ ngon!';
+            }
+            validateQuestCompletion();
+        }
+
+        function cancelQuestModal() {
+            clearInterval(questTimerInterval);
+            document.getElementById('questModal').style.display = 'none';
+        }
+
+        function confirmQuestReward() {
+            if (!activeQuest) return;
+            const completed = JSON.parse(localStorage.getItem(getQuestStorageKey())) || [];
+            if (!completed.includes(activeQuest.id)) {
+                completed.push(activeQuest.id);
+                localStorage.setItem(getQuestStorageKey(), JSON.stringify(completed));
+
+                let balance = parseInt(localStorage.getItem('balanceLeaves_' + currentStudent.id) || '0');
+                balance += activeQuest.reward;
+                localStorage.setItem('balanceLeaves_' + currentStudent.id, balance.toString());
+
+                renderQuests();
+                loadStats();
+                renderLeaderboard();
+
+                addBotMessage(`🎉 Thật tuyệt vời ${currentStudent.name}! Bạn vừa hoàn thành xuất sắc nhiệm vụ: "<b>${activeQuest.title}</b>" và được cộng +${activeQuest.reward} Lá Vàng ⭐. Hãy nhớ: Học tập có cân bằng mới giúp chúng ta đi đường dài!`);
+                openChatIfNotOpen();
+            }
+
+            cancelQuestModal();
         }
 
         // --- POMODORO & ĐẾM GIỜ ---
@@ -402,10 +684,10 @@
             if (isRunning) return;
             if (!currentStudent.name) { openLoginModal(); return; }
 
-            // Giới hạn chống cày cuốc (tối đa 90 lá/ngày)
+            // Giới hạn học tập cân bằng: tối đa 3 giờ (180 lá/ngày)
             const stats = getDailyLeaves();
-            if (stats >= 90) {
-                alert("⚠️ THÔNG BÁO TỪ VUI VẺ: Hôm nay bạn đã đạt ngưỡng tập trung tối ưu (90 Lá vui vẻ). Hãy nghỉ ngơi, vận động hoặc đi ngủ sớm để bảo vệ não bộ nhé!");
+            if (stats >= 180) {
+                alert("⚠️ THÔNG BÁO TỪ VUI VẺ: Hôm nay bạn đã đạt ngưỡng tập trung tối ưu (3 giờ - 180 Lá vui vẻ). Hãy nghỉ ngơi, vận động hoặc đi ngủ sớm để bảo vệ não bộ nhé!");
                 return;
             }
             
@@ -450,6 +732,8 @@
             showMessage(reason, "msg-error");
             btn.style.display = "inline-block"; btn.innerText = "Trồng lại từ đầu"; timeOption.disabled = false;
             pauseBtn.style.display = "none"; stopBtn.style.display = "none";
+            
+            addBotMessage("Ôi không, cây vừa bị héo vì bạn rời màn hình 🥀. Không sao cả, đừng nản nhé! Hít sâu một hơi, quay lại bàn học và trồng một mầm cây mới cùng Vui Vẻ nào!");
         }
 
         function tick() {
@@ -462,7 +746,10 @@
                 isRunning = false; isPaused = false;
                 btn.style.display = "inline-block"; btn.innerText = "Nuôi cây mới"; timeOption.disabled = false;
                 pauseBtn.style.display = "none"; stopBtn.style.display = "none";
+                
                 saveSession(earnedCoins, totalTime / 60);
+
+                addBotMessage(`👏 Chúc mừng ${currentStudent.name} vừa hoàn thành ${totalTime / 60} phút tập trung! Giờ là lúc bạn nên đứng dậy uống 1 ngụm nước và làm 1 Nhiệm Vụ Cân Bằng Hàng Ngày bên dưới nhé!`);
             }
         }
 
@@ -541,22 +828,71 @@
             document.getElementById("leaderboardList").innerHTML = html;
         }
 
+        // --- TRỢ LÝ AI "VUI VẺ" TÍCH HỢP TRỰC TIẾP TRÊN WEB ---
+        function toggleChat() {
+            const widget = document.getElementById("chatWidget");
+            widget.style.display = (widget.style.display === "flex") ? "none" : "flex";
+        }
+
+        function openChatIfNotOpen() {
+            const widget = document.getElementById("chatWidget");
+            widget.style.display = "flex";
+        }
+
+        function addBotMessage(text) {
+            const body = document.getElementById("chatBody");
+            const div = document.createElement("div");
+            div.className = "chat-msg bot";
+            div.innerHTML = text;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function addUserMessage(text) {
+            const body = document.getElementById("chatBody");
+            const div = document.createElement("div");
+            div.className = "chat-msg user";
+            div.innerText = text;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function sendQuickPrompt(promptText) {
+            addUserMessage(promptText);
+            generateAIResponse(promptText);
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById("chatInput");
+            const text = input.value.trim();
+            if (!text) return;
+            addUserMessage(text);
+            input.value = "";
+            generateAIResponse(text);
+        }
+
+        function generateAIResponse(query) {
+            const lower = query.toLowerCase();
+            setTimeout(() => {
+                if (lower.includes("tập trung") || lower.includes("xao nhãng")) {
+                    addBotMessage("🎯 <b>Bí quyết từ Vui Vẻ:</b> Hãy áp dụng quy tắc <b>'Bàn học sạch - Não thông thoáng'</b>! Cất điện thoại vào ngăn kéo, chỉ mở đúng tài liệu cần học và bật mốc 25 phút. Nếu thấy nảy ra ý định lướt mạng, hãy viết ý định đó ra giấy nháp rồi quay lại bài học nhé!");
+                } else if (lower.includes("mệt") || lower.includes("thể dục") || lower.includes("vươn vai") || lower.includes("nghỉ")) {
+                    addBotMessage("🧘 <b>Bài tập 2 phút cho mắt và cổ:</b><br>1. Xoay nhẹ khớp cổ theo chiều kim đồng hồ 5 vòng.<br>2. Nhắm chặt mắt trong 5 giây rồi mở to nhìn vào khoảng xanh xa xa.<br>3. Uống một ngụm nước ấm. Bạn đã làm nhiệm vụ cân bằng hàng ngày ở bảng bên cạnh chưa? Bấm thực hiện ngay để nhận Lá Vàng nhé!");
+                } else if (lower.includes("héo cây") || lower.includes("buồn") || lower.includes("thất bại")) {
+                    addBotMessage("🌱 Đừng buồn bạn nhé! Người kỷ luật không phải là người không bao giờ ngã, mà là người biết trồng lại sau khi héo cây. 1 phiên học vừa rồi dù cây héo nhưng bạn đã nhận ra thói quen xao nhãng của mình. Bấm bắt đầu lại thôi, Vui Vẻ luôn đồng hành cùng bạn!");
+                } else if (lower.includes("văn") || lower.includes("dàn ý")) {
+                    addBotMessage("✍️ <b>Dàn ý nhanh:</b> Cấu trúc 3 phần luôn hiệu quả: Mở bài (dẫn dắt trực tiếp), Thân bài (Luận điểm 1: Giải thích -> Luận điểm 2: Phân tích & chứng minh -> Luận điểm 3: Bàn luận mở rộng), Kết bài (Bài học cho học sinh THCS). Bạn đang viết đề tài gì thế?");
+                } else if (lower.includes("toán") || lower.includes("lý") || lower.includes("khtn")) {
+                    addBotMessage("📐 Học KHTN và Toán cốt lõi là <b>hiểu bản chất công thức</b> thay vì học vẹt. Bạn hãy thử tóm tắt đề bài bằng sơ đồ đoạn thẳng hoặc vẽ hình minh họa trước khi bắt tay vào giải bài nhé!");
+                } else {
+                    addBotMessage(`🌱 Vui Vẻ đã nghe bạn nói rồi nè. Đang trong giờ tự học, bạn hãy hoàn thành nốt mục tiêu của phiên này nhé. Nếu thấy căng thẳng, nhớ thực hiện các <b>Nhiệm Vụ Cân Bằng Hàng Ngày</b> có đếm giờ để nhận thêm Lá Vàng nghen!`);
+                }
+            }, 600);
+        }
+
         document.addEventListener("DOMContentLoaded", () => { 
             checkStudentLogin(); 
             updateDisplayTime(parseInt(timeOption.value) * 60); 
-        });
-    </script>
-    
-    <!-- CHATBOT COZE CHÍNH THỨC DÀNH CHO WEB HỌC TẬP VUI -->
-    <script src="https://sf-cdn.coze.com/obj/unpkg-va/flow-platform/chat-app-sdk/1.2.0-beta.6/libs/oversea/index.js"></script>
-    <script>
-        new CozeWebSDK.WebChatClient({
-            config: {
-                bot_id: '7701710632689172485',
-            },
-            componentProps: {
-                title: 'Vui Vẻ - Trợ lý AI',
-            },
         });
     </script>
 </body>
